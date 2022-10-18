@@ -25,6 +25,7 @@ export default {
   },
   methods: {
     selectPhoto(photoId) {
+      console.log('here')
       this.$emit('selectPhoto', photoId)
     }
   }

@@ -1,27 +1,35 @@
 <template>
   <div class="feed">
-    <div class="scroll-feed" v-if="photosArray" >
-      <FeedCard v-for="photo in photosArray" :key="photo.id"  :photo=photo></FeedCard>
+    <div>
+      <div class="scroll-feed" v-if="photosArray" >
+        <FeedCard v-for="photo in photosArray" :key="photo.id"  :photo=photo @selectPhoto="selectPhoto"/>
+      </div>
     </div>
-    <div class="item-view" v-if="selectdPhoto"></div>
-    <div class="item-view" v-else>
-      <img src="../assets/empty.svg" />
-      <h3>No Photo Selected</h3>
-    </div>
+    <div>
+      <div class="item-view" v-if="selectedPhoto">
+        <DetailView :photo="selectedPhoto"/>
+      </div>
+      <div class="item-view" v-else>
+        <img src="../assets/empty.svg" />
+        <h3>No Photo Selected</h3>
+      </div>
+  </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import DetailView from './DetailView.vue'
 import FeedCard from './FeedCard.vue'
 export default {
   name: 'SplashFeed',
   components: {
-    FeedCard
+    FeedCard,
+    DetailView
   },
   data : () => ({
     photosArray:null,
-    selectdPhoto:null
+    selectedPhoto:null
   }),
   mounted: function(){
     this.getPhotos()
@@ -31,6 +39,11 @@ export default {
       const res = await axios.get(`https://api.unsplash.com/photos/?client_id=q7_-eEbuDJXNJo1hqmJqkM81oyibAv0rCLoha0SAtHk`)
       console.log(res.data)
       this.photosArray = res.data
+    },
+    async selectPhoto(photoId) {
+      const res = await axios.get(`https://api.unsplash.com/photos/${photoId}?client_id=q7_-eEbuDJXNJo1hqmJqkM81oyibAv0rCLoha0SAtHk`)
+      console.log(res.data)
+      this.selectedPhoto = res.data
     }
   }
 }
@@ -38,7 +51,8 @@ export default {
 
 <style>
 .feed {
-  display: flex;
+  display:flex;
+  flex-flow:row nowrap;
 }
 
 .scroll-feed {
